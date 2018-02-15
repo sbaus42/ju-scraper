@@ -27,8 +27,6 @@ end
 
 funds_address.uniq!
 
-binding.pry
-
 # After the pages are there, put everything in a hash and convert to JSON
 
 campaign_info = {
@@ -50,6 +48,4 @@ funds_address.each do |site|
   title = parse_page.css('h1.campaign-title').text
   collected = parse_page.css('h2.goal strong').first.text
   goal = parse_page.css('h2.goal span').first.text.scan(/\$.+\s/).first.strip
-
-  binding.pry
 end
