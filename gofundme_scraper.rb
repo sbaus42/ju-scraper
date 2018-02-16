@@ -50,6 +50,7 @@ funds_address.each do |site|
 
   campaign_data.push({
     title: title,
+    description: description,
     collected: collected,
     goal: goal,
     backers: backers,

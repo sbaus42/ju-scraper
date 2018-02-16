@@ -2,7 +2,6 @@ require 'nokogiri'
 require 'httparty'
 require 'pry'
 
-
 # Get a list of Pages to scrape
 categories = [
   'https://www.ioby.org/projects/browse/closed?f[0]=sm_field_project_status%3A3',
@@ -31,6 +30,7 @@ categories.each do |site|
 end
 
 funds_address.uniq!
+campaign_data = []
 
 # funds_address = ['https://www.ioby.org/project/heritage-compost-project']
 
@@ -39,13 +39,18 @@ funds_address.each do |site|
   parse_page = Nokogiri::HTML(page)
 
   title = parse_page.css('h1#pagetitle').text
-  collected = parse_page.css('.raised .big').first.text
-  goal = parse_page.css('.needed .big').first.text
+  description = parse_page.css('.full p')[1].text rescue ''
 
-  # TODO: Donors
+  collected = parse_page.css('.raised .big').first.text
+  goal = parse_page.css('#total_funding_needed span').first.text
+
+  donors = parse_page.css('donor-list li').length
+
   campaign_data.push({
     title: title,
+    description: description,
     collected: collected,
-    goal: goal
+    goal: goal,
+    donors: donors
   })
 end
