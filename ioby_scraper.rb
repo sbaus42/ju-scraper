@@ -43,4 +43,9 @@ funds_address.each do |site|
   goal = parse_page.css('.needed .big').first.text
 
   # TODO: Donors
+  campaign_data.push({
+    title: title,
+    collected: collected,
+    goal: goal
+  })
 end

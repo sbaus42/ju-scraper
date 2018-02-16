@@ -2,7 +2,6 @@ require 'nokogiri'
 require 'httparty'
 require 'pry'
 
-
 # Get a list of Pages to scrape
 categories = [
   'https://es.gofundme.com/classroom-fundraising',
@@ -28,24 +27,32 @@ end
 funds_address.uniq!
 
 # After the pages are there, put everything in a hash and convert to JSON
-
-campaign_info = {
-  title: '',
-  description: '',
-  collected: '',
-  goal: '',
-  backers: '',
-  campaign_time: '',
-  query_date: ''
-}
-
 # funds_address = ['https://es.gofundme.com/39i3m68']
+
+campaign_data = []
 
 funds_address.each do |site|
   page = HTTParty.get(site)
   parse_page = Nokogiri::HTML(page)
 
-  title = parse_page.css('h1.campaign-title').text
-  collected = parse_page.css('h2.goal strong').first.text
-  goal = parse_page.css('h2.goal span').first.text.scan(/\$.+\s/).first.strip
+  title = parse_page.css('h1.campaign-title').text rescue ''
+  description = parse_page.css('#story p').text rescue ''
+
+  collected = parse_page.css('h2.goal strong').first.text rescue ''
+  goal = parse_page.css('h2.goal span')
+          .first.text
+          .scan(/\$.+\s/)
+          .first.strip rescue ''
+
+  r_match = parse_page.css('.campaign-status').first.text rescue ''
+  backers, time_lapse = r_match.scan(/\d+/)
+  time_lapse += r_match.scan(/\b\w+$/).first
+
+  campaign_data.push({
+    title: title,
+    collected: collected,
+    goal: goal,
+    backers: backers,
+    time_lapse: time_lapse
+  })
 end
