@@ -1,4 +1,3 @@
-
 class Addresses
   WATER = ["https://www.innocentive.com/ar/challenge/9933880", "https://www.innocentive.com/ar/challenge/9933882", "https://www.innocentive.com/ar/challenge/9933993", "https://www.innocentive.com/ar/challenge/9933879", "https://www.innocentive.com/ar/challenge/9933764"]
 

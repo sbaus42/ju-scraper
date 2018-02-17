@@ -46,7 +46,7 @@ funds_address.each do |site|
 
   r_match = parse_page.css('.campaign-status').first.text rescue ''
   backers, time_lapse = r_match.scan(/\d+/)
-  time_lapse += r_match.scan(/\b\w+$/).first
+  time_lapse += r_match.scan(/\b\w+$/).first if time_lapse
 
   campaign_data.push({
     title: title,
@@ -54,6 +54,15 @@ funds_address.each do |site|
     collected: collected,
     goal: goal,
     backers: backers,
-    time_lapse: time_lapse
+    time_lapse: time_lapse,
+    query_date: Date.today.to_s
   })
 end
+
+CSV.open('gofundme.csv', 'wb') do |csv|
+  csv << campaign_data.first.keys
+  campaign_data.each do |data|
+    csv << data.values if data.values
+  end
+end
+

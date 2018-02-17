@@ -33,9 +33,8 @@ funds_address.uniq!
 campaign_data = []
 
 # funds_address = ['https://www.ioby.org/project/heritage-compost-project']
-
 funds_address.each do |site|
-  page = HTTParty.get(site)
+  page = HTTParty.get(site) rescue next
   parse_page = Nokogiri::HTML(page)
 
   title = parse_page.css('h1#pagetitle').text
@@ -51,6 +50,14 @@ funds_address.each do |site|
     description: description,
     collected: collected,
     goal: goal,
-    donors: donors
+    donors: donors,
+    query_date: Date.today.to_s
   })
+end
+
+CSV.open('ioby.csv', 'wb') do |csv|
+  csv << campaign_data.first.keys
+  campaign_data.each do |data|
+    csv << data.values if data.values
+  end
 end

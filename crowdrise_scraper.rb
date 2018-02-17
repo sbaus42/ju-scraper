@@ -3,6 +3,7 @@ require 'httparty'
 require 'pry'
 require 'headless'
 require 'watir'
+require 'csv'
 
 # Get a list of Pages to scrape
 categories = [
@@ -32,7 +33,9 @@ categories.each do |site|
   end
 end
 funds_address.uniq!
-# Now get the info required
+
+# Dummy value to test
+# funds_address = ['https://www.crowdrise.com/o/en/campaign/save-hiv-positive-african-asylum-seekers']
 
 campaign_data = []
 
@@ -41,13 +44,29 @@ funds_address.each do |site|
   parse_page = Nokogiri::HTML(page)
 
   title = parse_page.css('h1.campaign-title').text rescue ''
+  description = parse_page.css('div.tab-text p').first.text rescue ''
+
   collected =  parse_page.css('h2.raised').first.text rescue ''
   goal =  parse_page.css('h3.goal').first.text.scan(/\$.+\s/).first.strip rescue ''
 
+  r_match = parse_page.css('p.cta-subtext').first.text rescue ''
+  backers, time_lapse = r_match.scan(/\d+/)
+  time_lapse += r_match.scan(/\b\w+$/).first if time_lapse
+
   campaign_data.push({
     title: title,
+    description: description,
     collected: collected,
-    goal: goal
+    goal: goal,
+    backers: backers,
+    time_lapse: time_lapse,
+    query_date: Date.today.to_s
   })
 end
 
+CSV.open('crowdrise.csv', 'wb') do |csv|
+  csv << campaign_data.first.keys
+  campaign_data.each do |data|
+    csv << data.values if data.values
+  end
+end
