@@ -37,13 +37,13 @@ funds_address.each do |site|
   page = HTTParty.get(site) rescue next
   parse_page = Nokogiri::HTML(page)
 
-  title = parse_page.css('h1#pagetitle').text
+  title = parse_page.css('h1#pagetitle').text rescue ''
   description = parse_page.css('.full p')[1].text rescue ''
 
-  collected = parse_page.css('.raised .big').first.text
-  goal = parse_page.css('#total_funding_needed span').first.text
+  collected = parse_page.css('.raised .big').first.text rescue ''
+  goal = parse_page.css('#total_funding_needed span').first.text rescue ''
 
-  donors = parse_page.css('donor-list li').length
+  donors = parse_page.css('.donor-list li').length.to_s rescue ''
 
   campaign_data.push({
     title: title,

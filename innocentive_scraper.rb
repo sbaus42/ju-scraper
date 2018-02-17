@@ -22,7 +22,8 @@ Addresses::ALL.each do |site|
     reward: reward,
     participants: participants,
     start_date: start_date,
-    end_date: end_date
+    end_date: end_date,
+    query_date: Date.today.to_s
   })
 end
 
