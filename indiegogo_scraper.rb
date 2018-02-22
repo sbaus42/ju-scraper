@@ -33,8 +33,6 @@ Addresses::ALL.each do |site|
   description = parse_page.css('.campaignOverview-contentText').text.strip rescue ''
   goal = parse_page.css('.campaignGoalProgress-detailsGoal div')
 
-  binding.pry
-
   parsed += 1
   puts "Parsed #{parsed} of #{to_parse}"
 
